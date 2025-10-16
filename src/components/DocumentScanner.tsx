@@ -40,19 +40,22 @@ const DocumentScanner = () => {
                   Analyze {type.label.toLowerCase()}s and extract professional information
                 </p>
                 
-                <div className="rounded-lg border-2 border-dashed border-border bg-muted/30 p-12 text-center">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                    <Upload className="h-8 w-8 text-primary" />
+                <div 
+                  className="group relative rounded-lg border-2 border-dashed border-primary/30 p-12 text-center transition-all duration-300 hover:border-primary/60 hover:shadow-[0_0_20px_hsla(258,85%,57%,0.15)] cursor-pointer"
+                  style={{ background: 'var(--gradient-upload)' }}
+                >
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110" style={{ boxShadow: '0 0 0 8px hsla(258, 85%, 57%, 0.05)' }}>
+                    <Upload className="h-10 w-10 text-primary group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  <h3 className="mt-4 text-lg font-semibold">Upload {type.label}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <h3 className="mt-6 text-xl font-bold text-foreground">Upload {type.label}</h3>
+                  <p className="mt-3 text-sm font-medium text-primary/80">
                     Drag & drop your {type.label.toLowerCase()} here, or click to browse
                   </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <p className="mt-2 text-xs text-muted-foreground">
                     Supported formats: PDF, DOC, DOCX, TXT, JPG, PNG
                   </p>
-                  <Button className="mt-6">
-                    <Upload className="mr-2 h-4 w-4" />
+                  <Button className="mt-8 shadow-md hover:shadow-lg transition-shadow" size="lg">
+                    <Upload className="mr-2 h-5 w-5" />
                     Browse Files
                   </Button>
                 </div>
