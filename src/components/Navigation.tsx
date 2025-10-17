@@ -1,5 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
-import { FileText, LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,38 +8,61 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import logo from "@/assets/docscan.png";
+import { supabase } from "@/integrations/supabase/client";
 
 const Navigation = () => {
   const location = useLocation();
-  
-  const navLinks = [
-    { path: "/dashboard", label: "Dashboard" },
-    { path: "/history", label: "History" },
-  ];
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (!error && data?.user) {
+        const { user_metadata } = data.user;
+        const fullName = `${user_metadata.first_name ?? ""} ${user_metadata.last_name ?? ""}`.trim();
+        setUserName(fullName || "User");
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();  // ✅ Logs out from Supabase
+    navigate("/signin");
+  };
 
   return (
     <nav className="border-b bg-card">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-8">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <FileText className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">ScanDoc</span>
+            <img srcSet={logo} style={{ width: "150px" }} />
           </Link>
-          
+
           <div className="hidden md:flex gap-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  location.pathname === link.path
-                    ? "text-foreground"
-                    : "text-muted-foreground"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            <Link
+              to="/dashboard"
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                location.pathname === "/dashboard"
+                  ? "text-foreground"
+                  : "text-muted-foreground"
+              }`}
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/history"
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                location.pathname === "/history"
+                  ? "text-foreground"
+                  : "text-muted-foreground"
+              }`}
+            >
+              History
+            </Link>
           </div>
         </div>
 
@@ -46,13 +70,13 @@ const Navigation = () => {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                TR
+                {userName ? userName[0].toUpperCase() : "?"}
               </div>
-              <span className="hidden sm:inline">tonny robin</span>
+              <span className="hidden sm:inline">{userName}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
               <LogOut className="mr-2 h-4 w-4" />
               Logout
             </DropdownMenuItem>
